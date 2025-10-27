@@ -1,0 +1,149 @@
+asyncapi: 2.0.0
+info:
+  title: EcoConnect Realtime API
+  version: 1.0.0
+  description: Realtime API specification for EcoConnect app, covering all
+    relevant events and schemas.
+servers:
+  ecoConnectServer:
+    url: http://localhost:3000
+    protocol: ws
+channels:
+  user/created:
+    description: Event published when a new user is created.
+    subscribe:
+      operationId: onUserCreated
+      summary: Subscribe to new user creation events.
+      message:
+        name: UserCreatedMessage
+        payload:
+          type: object
+          properties:
+            user:
+              $ref: "#/components/schemas/User"
+  user/updated:
+    description: Event published when a user's information is updated.
+    subscribe:
+      operationId: onUserUpdated
+      summary: Subscribe to user update events.
+      message:
+        name: UserUpdatedMessage
+        payload:
+          type: object
+          properties:
+            user:
+              $ref: "#/components/schemas/User"
+  user_goals/created:
+    description: Event published when a new goal is created for a user.
+    subscribe:
+      operationId: onUserGoalCreated
+      summary: Subscribe to new user goal creation events.
+      message:
+        name: UserGoalCreatedMessage
+        payload:
+          type: object
+          properties:
+            user_goal:
+              $ref: "#/components/schemas/UserGoal"
+  user_goals/updated:
+    description: Event published when a user's goal is updated.
+    subscribe:
+      operationId: onUserGoalUpdated
+      summary: Subscribe to user goal update events.
+      message:
+        name: UserGoalUpdatedMessage
+        payload:
+          type: object
+          properties:
+            user_goal:
+              $ref: "#/components/schemas/UserGoal"
+  eco_activities/logged:
+    description: Event published when a user logs a new eco activity.
+    subscribe:
+      operationId: onEcoActivityLogged
+      summary: Subscribe to eco activity log events.
+      message:
+        name: EcoActivityLoggedMessage
+        payload:
+          type: object
+          properties:
+            eco_activity:
+              $ref: "#/components/schemas/EcoActivity"
+  notifications/received:
+    description: Event published when a new notification is received for a user.
+    subscribe:
+      operationId: onNotificationReceived
+      summary: Subscribe to notification events.
+      message:
+        name: NotificationReceivedMessage
+        payload:
+          type: object
+          properties:
+            notification:
+              $ref: "#/components/schemas/Notification"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        eco_level:
+          type: number
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    UserGoal:
+      type: object
+      properties:
+        goal_id:
+          type: string
+        user_id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        milestones:
+          type: array
+          items:
+            type: string
+          nullable: true
+        completion_status:
+          type: boolean
+        last_updated:
+          type: string
+          format: date-time
+          nullable: true
+    EcoActivity:
+      type: object
+      properties:
+        activity_id:
+          type: string
+        user_id:
+          type: string
+        activity_name:
+          type: string
+        date_logged:
+          type: string
+          format: date-time
+    Notification:
+      type: object
+      properties:
+        notification_id:
+          type: string
+        user_id:
+          type: string
+        message:
+          type: string
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time

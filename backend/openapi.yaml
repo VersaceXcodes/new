@@ -1,0 +1,697 @@
+openapi: 3.0.0
+info:
+  title: EcoConnect API
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserInput"
+      responses:
+        "200":
+          description: User successfully registered and authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /api/auth/login:
+    post:
+      summary: Authenticate user
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: User successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  auth_token:
+                    type: string
+                  user:
+                    $ref: "#/components/schemas/User"
+  /api/users/{user_id}:
+    get:
+      summary: Retrieve a user profile by ID
+      operationId: getUserProfile
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    patch:
+      summary: Update user profile
+      operationId: updateUserProfile
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserInput"
+      responses:
+        "200":
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+  /api/goals:
+    get:
+      summary: List user goals
+      operationId: listUserGoals
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of user goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserGoal"
+    post:
+      summary: Create a new user goal
+      operationId: createUserGoal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserGoalInput"
+      responses:
+        "201":
+          description: User goal created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserGoal"
+  /api/goals/{goal_id}:
+    patch:
+      summary: Update a user goal
+      operationId: updateUserGoal
+      parameters:
+        - name: goal_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserGoalInput"
+      responses:
+        "200":
+          description: User goal updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserGoal"
+    delete:
+      summary: Delete a user goal
+      operationId: deleteUserGoal
+      parameters:
+        - name: goal_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: User goal deleted successfully
+  /api/activities:
+    get:
+      summary: List user activities
+      operationId: listUserActivities
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of user activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EcoActivity"
+    post:
+      summary: Log a new eco activity
+      operationId: createEcoActivity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEcoActivityInput"
+      responses:
+        "201":
+          description: Eco activity logged successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EcoActivity"
+  /api/activities/{activity_id}:
+    patch:
+      summary: Update an eco activity
+      operationId: updateEcoActivity
+      parameters:
+        - name: activity_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEcoActivityInput"
+      responses:
+        "200":
+          description: Eco activity updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EcoActivity"
+    delete:
+      summary: Delete an eco activity
+      operationId: deleteEcoActivity
+      parameters:
+        - name: activity_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Eco activity deleted successfully
+  /api/resources:
+    get:
+      summary: List resources
+      operationId: listResources
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: sort_by
+          in: query
+          schema:
+            type: string
+            default: title
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            default: desc
+      responses:
+        "200":
+          description: List of resources
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Resource"
+    post:
+      summary: Add a new resource
+      operationId: createResource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateResourceInput"
+      responses:
+        "201":
+          description: Resource added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resource"
+  /api/resources/{resource_id}:
+    patch:
+      summary: Update a resource
+      operationId: updateResource
+      parameters:
+        - name: resource_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateResourceInput"
+      responses:
+        "200":
+          description: Resource updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resource"
+    delete:
+      summary: Delete a resource
+      operationId: deleteResource
+      parameters:
+        - name: resource_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Resource deleted successfully
+  /api/challenges:
+    get:
+      summary: List challenges
+      operationId: listChallenges
+      responses:
+        "200":
+          description: List of challenges
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Challenge"
+    post:
+      summary: Create a new challenge
+      operationId: createChallenge
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateChallengeInput"
+      responses:
+        "201":
+          description: Challenge created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Challenge"
+  /api/challenges/{challenge_id}:
+    patch:
+      summary: Update a challenge
+      operationId: updateChallenge
+      parameters:
+        - name: challenge_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateChallengeInput"
+      responses:
+        "200":
+          description: Challenge updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Challenge"
+    delete:
+      summary: Delete a challenge
+      operationId: deleteChallenge
+      parameters:
+        - name: challenge_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Challenge deleted successfully
+  /api/notifications:
+    get:
+      summary: List user notifications
+      operationId: listNotifications
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+    post:
+      summary: Create a notification
+      operationId: createNotification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNotificationInput"
+      responses:
+        "201":
+          description: Notification created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+  /api/notifications/{notification_id}/mark_read:
+    patch:
+      summary: Mark a notification as read
+      operationId: markNotificationAsRead
+      parameters:
+        - name: notification_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Notification marked as read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        eco_level:
+          type: integer
+          nullable: true
+        created_at:
+          type: string
+    CreateUserInput:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        eco_level:
+          type: integer
+          nullable: true
+    UpdateUserInput:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        eco_level:
+          type: integer
+          nullable: true
+    UserGoal:
+      type: object
+      properties:
+        goal_id:
+          type: string
+        user_id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        milestones:
+          type: array
+          items:
+            type: string
+          nullable: true
+        completion_status:
+          type: boolean
+        last_updated:
+          type: string
+          nullable: true
+    CreateUserGoalInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        milestones:
+          type: array
+          items:
+            type: string
+          nullable: true
+        completion_status:
+          type: boolean
+          nullable: true
+    UpdateUserGoalInput:
+      type: object
+      properties:
+        goal_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        milestones:
+          type: array
+          items:
+            type: string
+          nullable: true
+        completion_status:
+          type: boolean
+          nullable: true
+        last_updated:
+          type: string
+          nullable: true
+    EcoActivity:
+      type: object
+      properties:
+        activity_id:
+          type: string
+        user_id:
+          type: string
+        activity_name:
+          type: string
+        date_logged:
+          type: string
+    CreateEcoActivityInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        activity_name:
+          type: string
+        date_logged:
+          type: string
+    UpdateEcoActivityInput:
+      type: object
+      properties:
+        activity_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        activity_name:
+          type: string
+          nullable: true
+        date_logged:
+          type: string
+          nullable: true
+    Resource:
+      type: object
+      properties:
+        resource_id:
+          type: string
+        category:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        read_count:
+          type: integer
+          nullable: true
+    CreateResourceInput:
+      type: object
+      properties:
+        category:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        read_count:
+          type: integer
+          nullable: true
+    UpdateResourceInput:
+      type: object
+      properties:
+        resource_id:
+          type: string
+        category:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        content:
+          type: string
+          nullable: true
+        read_count:
+          type: integer
+          nullable: true
+    Challenge:
+      type: object
+      properties:
+        challenge_id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        start_date:
+          type: string
+        end_date:
+          type: string
+    CreateChallengeInput:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        start_date:
+          type: string
+        end_date:
+          type: string
+    UpdateChallengeInput:
+      type: object
+      properties:
+        challenge_id:
+          type: string
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        start_date:
+          type: string
+          nullable: true
+        end_date:
+          type: string
+          nullable: true
+    Notification:
+      type: object
+      properties:
+        notification_id:
+          type: string
+        user_id:
+          type: string
+        message:
+          type: string
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+    CreateNotificationInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        message:
+          type: string
+        is_read:
+          type: boolean
+          nullable: true
+    UpdateNotificationInput:
+      type: object
+      properties:
+        notification_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        message:
+          type: string
+          nullable: true
+        is_read:
+          type: boolean
+          nullable: true
